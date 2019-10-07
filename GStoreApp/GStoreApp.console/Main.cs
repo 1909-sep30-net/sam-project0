@@ -20,13 +20,13 @@ namespace GStoreApp.ConsoleApp
             Console.WriteLine("6. Display All History Order by Customer");
             Console.WriteLine("7. Exit");
             Console.WriteLine("---------------------");
-            
+
 
             //need to handle exception later
             do
             {
                 Console.WriteLine("Please Enter Your Answer(1-7):  ");
-                
+
                 try
                 {
                     mainMenu = Int32.Parse(Console.ReadLine());
@@ -41,7 +41,7 @@ namespace GStoreApp.ConsoleApp
                 }
 
             } while (mainMenu < 1 || mainMenu > 7);
-            
+
 
             switch (mainMenu)
             {
@@ -69,10 +69,6 @@ namespace GStoreApp.ConsoleApp
 
             }
 
-            static void PlaceOrder()
-            {
-                
-            }
         }
     }
 }

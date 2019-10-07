@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GStoreApp.Library
+namespace GStoreApp.Library.Repo
 {
-    class Order
+    class Repo
     {
     }
 }
