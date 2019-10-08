@@ -4,7 +4,17 @@ using System.Text;
 
 namespace GStoreApp.Library.Model
 {
-    class Store
+    public class Store
     {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int PostalCode { get; set; }
+
+        public Store( int id, string name, int postalCode)
+        {
+            Id = id;
+            Name = name;
+            PostalCode = postalCode;
+        }
     }
 }
