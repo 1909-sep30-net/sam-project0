@@ -10,11 +10,14 @@ namespace GStoreApp.Library.Model
         public string Name { get; set; }
         public int PostalCode { get; set; }
 
-        public Store( int id, string name, int postalCode)
+        public List<Product> Products { get; set; }
+
+        public Store( int id, string name, int postalCode, List<Product> products)
         {
             Id = id;
             Name = name;
             PostalCode = postalCode;
+            Products = products;
         }
     }
 }

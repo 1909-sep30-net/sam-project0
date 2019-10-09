@@ -4,16 +4,25 @@ namespace GStoreApp.Library.Model
 {
     public class Customer
     {
-        public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string DefaultStore { get; set; }
 
-        public Customer( int id, string fName, string lName)
+        public Customer( string fName, string lName, string defaultStore)
         {
-            Id = id;
             FirstName = fName;
             LastName = lName;
+            DefaultStore = defaultStore;
         }
         
+        public void AddCustomer( string fName, string lName, string defaultstore )
+        {
+            // Add new Customer into database
+        }
+
+        public void SearchCustomer(string fName, string lName)
+        {
+            //search customer from database
+        }
     }
 }
