@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GStoreApp.Library
 {
-    public partial class Store
+    public class Store
     {
         public int StoreId { get; set; }
         public string StoreName { get; set; }

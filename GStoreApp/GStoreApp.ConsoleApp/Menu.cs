@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using GStoreApp;
 using DB.Repo;
+using GStoreApp.Library;
 
 namespace GStoreApp.ConsoleApp
 {
@@ -67,9 +68,12 @@ namespace GStoreApp.ConsoleApp
                     string phone = Console.ReadLine();
                     Console.WriteLine("Please enter your default store: ");
                     int favStore = Int32.Parse(Console.ReadLine());
+
+                    Customer customerNew = new Customer(fName, lName, phone, favStore ) ;
+
                     Repo newGuys = new Repo();
-                    newGuys.AddCustomer(fName, lName, phone, favStore);
-                    PlaceOrder(fName, lName, favStore);
+                    newGuys.AddCustomer(customerNew);
+                    PlaceOrder(customerNew, newGuys);
                     break;
 
                 case 2:
@@ -77,9 +81,17 @@ namespace GStoreApp.ConsoleApp
                     fName = Console.ReadLine();
                     Console.WriteLine("Please Enter your last name: ");
                     lName = Console.ReadLine();
+
+                    Customer customerOld = new Customer(fName, lName);
+
                     Repo oldGuys = new Repo();
-                    favStore = oldGuys.SearchCustomer(fName, lName);
-                    PlaceOrder(fName, lName, favStore);
+                    Customer customerFound = oldGuys.SearchCustomer(customerOld);
+                    Console.WriteLine(customerFound.CustomerId);
+                    Console.WriteLine(customerFound.FirstName);
+                    Console.WriteLine(customerFound.LastName);
+                    Console.WriteLine(customerFound.FavoriteStore);
+                    // call repo to get data from database, then send back here
+                    PlaceOrder(customerFound, oldGuys);
                     break;
 
                 default:
@@ -90,23 +102,29 @@ namespace GStoreApp.ConsoleApp
             MainMenu();
         }
 
-        public void PlaceOrder( string fName, string lName, int store )
+        public void PlaceOrder( Customer cusotmer, Repo repo )
         {
             Console.WriteLine("Here is our menu today: ");
-            Console.WriteLine("1. Nintendo Switch");
-            Console.WriteLine("2. Xbox ONE");
-            Console.WriteLine("3. Playstation 4 Pro");
+            Console.WriteLine("1. Nintendo Switch: $199.99");
+            Console.WriteLine("2. Xbox ONE: $300.00");
+            Console.WriteLine("3. Playstation 4 Pro: $299.99");
             Console.WriteLine("If you want NS*1, Xbox*1, PS4*1,");
             Console.WriteLine("Please Enter 111");
             Console.WriteLine("If you want Xbox*1, PS*1");
             Console.WriteLine("Please Enter 011");
             Console.WriteLine("-----------------------");
             Console.WriteLine("Please Enter you order: ");
-            //check input format
-            string orderAmount = Console.ReadLine();
-            Repo order = new Repo();
-            order.OrderPlaced( fName, lName, store, orderAmount);
+            string order = Console.ReadLine();
 
+            int ns = Int32.Parse(order[0].ToString());
+            int xb = Int32.Parse(order[1].ToString());
+            int ps = Int32.Parse(order[2].ToString());
+            decimal totalPrice = (ns * 199.99m + xb * 300.00m + ps * 299.99m ); 
+            Order newOrder = new Order(cusotmer, ns, xb, ps, DateTime.Today, totalPrice);
+
+            //add confirm message
+
+            repo.OrderPlaced(newOrder);
             MainMenu();
         }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GStoreApp.Library
 {
-    public partial class OrderOverView
+    public class OrderOverView
     {
         public int OrderId { get; set; }
         public int CustomerId { get; set; }
@@ -12,4 +12,6 @@ namespace GStoreApp.Library
         public decimal TotalPrice { get; set; }
 
     }
+
+
 }

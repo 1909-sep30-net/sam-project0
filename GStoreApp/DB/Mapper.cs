@@ -65,19 +65,19 @@ namespace DB.Repo
             {
                 OrderItemId = or.OrderItemId,
                 OrderId = or.OrderId,
-                ProducutName = or.ProducutName,
+                ProductName = or.ProducutName,
                 Amount = or.Amount
             };
         }
 
-        public static Entities.OrderItem MapOrderItem(OrderItem or)
+        public static Entities.OrderItem MapOrderItem( int amount, int orderId, string product )
         {
             return new Entities.OrderItem
             {
-                OrderItemId = or.OrderItemId,
-                OrderId = or.OrderId,
-                ProducutName = or.ProducutName,
-                Amount = or.Amount
+                OrderItemId = 0,
+                OrderId = orderId,
+                ProducutName = product,
+                Amount = amount
             };
         }
 
@@ -93,15 +93,15 @@ namespace DB.Repo
             };
         }
 
-        public static Entities.OrderOverView MapOrderOverView(OrderOverView ov)
+        public static Entities.OrderOverView MapOrderOverView( Order o )
         {
             return new Entities.OrderOverView
             {
-                OrderId = ov.OrderId,
-                StoreId = ov.StoreId,
-                OrderDate = ov.OrderDate,
-                CustomerId = ov.CustomerId,
-                TotalPrice = ov.TotalPrice
+                OrderId = 0,
+                StoreId = (int)(o.Customer.FavoriteStore),
+                OrderDate = o.OrderDate,
+                CustomerId = o.Customer.CustomerId,
+                TotalPrice = o.TotalPrice
             };
         }
 
@@ -146,5 +146,7 @@ namespace DB.Repo
                 Postal = s.Postal
             };
         }
+
+        
     }
 }

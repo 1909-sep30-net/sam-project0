@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GStoreApp.Library
 {
-    public partial class Product
+    public class Product
     {
 
         public int ProductId { get; set; }
