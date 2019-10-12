@@ -3,18 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29324.140
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GStoreApp.ConsoleApp", "GStoreApp.Console\GStoreApp.ConsoleApp.csproj", "{9A1289F1-4EE3-4B47-9448-329D32B8AE32}"
-	ProjectSection(ProjectDependencies) = postProject
-		{F2CDA6BB-A334-47E3-97B5-7486956B25B7} = {F2CDA6BB-A334-47E3-97B5-7486956B25B7}
-	EndProjectSection
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DB", "DB\DB.csproj", "{3218F0AE-A414-4A01-B0AB-00DB777576EB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GStoreApp.Tests", "GStoreApp.Tests\GStoreApp.Tests.csproj", "{42CBBD11-116E-48A1-A4DD-5B3AAFEE1AF4}"
-	ProjectSection(ProjectDependencies) = postProject
-		{F2CDA6BB-A334-47E3-97B5-7486956B25B7} = {F2CDA6BB-A334-47E3-97B5-7486956B25B7}
-		{9A1289F1-4EE3-4B47-9448-329D32B8AE32} = {9A1289F1-4EE3-4B47-9448-329D32B8AE32}
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GStoreApp.Library", "GStoreApp.Library2\GStoreApp.Library.csproj", "{51B63C29-C6FD-40DA-B5B7-846D14655F4A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GStoreApp.Library", "GStoreApp.Library\GStoreApp.Library.csproj", "{F2CDA6BB-A334-47E3-97B5-7486956B25B7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GStoreApp.ConsoleApp", "GStoreApp.ConsoleApp\GStoreApp.ConsoleApp.csproj", "{C84AF1F9-A2D2-446B-8F84-B0999F5325ED}"
+	ProjectSection(ProjectDependencies) = postProject
+		{51B63C29-C6FD-40DA-B5B7-846D14655F4A} = {51B63C29-C6FD-40DA-B5B7-846D14655F4A}
+		{3218F0AE-A414-4A01-B0AB-00DB777576EB} = {3218F0AE-A414-4A01-B0AB-00DB777576EB}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,18 +19,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9A1289F1-4EE3-4B47-9448-329D32B8AE32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9A1289F1-4EE3-4B47-9448-329D32B8AE32}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9A1289F1-4EE3-4B47-9448-329D32B8AE32}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9A1289F1-4EE3-4B47-9448-329D32B8AE32}.Release|Any CPU.Build.0 = Release|Any CPU
-		{42CBBD11-116E-48A1-A4DD-5B3AAFEE1AF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{42CBBD11-116E-48A1-A4DD-5B3AAFEE1AF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{42CBBD11-116E-48A1-A4DD-5B3AAFEE1AF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{42CBBD11-116E-48A1-A4DD-5B3AAFEE1AF4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F2CDA6BB-A334-47E3-97B5-7486956B25B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F2CDA6BB-A334-47E3-97B5-7486956B25B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F2CDA6BB-A334-47E3-97B5-7486956B25B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F2CDA6BB-A334-47E3-97B5-7486956B25B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3218F0AE-A414-4A01-B0AB-00DB777576EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3218F0AE-A414-4A01-B0AB-00DB777576EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3218F0AE-A414-4A01-B0AB-00DB777576EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3218F0AE-A414-4A01-B0AB-00DB777576EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51B63C29-C6FD-40DA-B5B7-846D14655F4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51B63C29-C6FD-40DA-B5B7-846D14655F4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51B63C29-C6FD-40DA-B5B7-846D14655F4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51B63C29-C6FD-40DA-B5B7-846D14655F4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C84AF1F9-A2D2-446B-8F84-B0999F5325ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C84AF1F9-A2D2-446B-8F84-B0999F5325ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C84AF1F9-A2D2-446B-8F84-B0999F5325ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C84AF1F9-A2D2-446B-8F84-B0999F5325ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

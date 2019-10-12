@@ -21,8 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GStoreApp.Console\GStoreApp.ConsoleApp.csproj" />
-    <ProjectReference Include="..\GStoreApp.Library\GStoreApp.Library.csproj" />
+    <ProjectReference Include="..\GStoreApp.Console\GCStoreApp.ConsoleApp.csproj" />
   </ItemGroup>
 
 </Project>

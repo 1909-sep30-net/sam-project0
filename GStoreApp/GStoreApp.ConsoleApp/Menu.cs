@@ -1,70 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using GStoreApp.Library.Model;
+using GStoreApp;
+using DB.Repo;
 
-namespace GStoreApp.Library.Repo
+namespace GStoreApp.ConsoleApp
 {
     public class Menu
     {
-        const string store = "Arlington";
         public void MainMenu()
         {
-            int mainMenu = 0;
+            int mainMenu;
+
             Console.WriteLine("Welcome to GCSotre!");
             Console.WriteLine("How can I help you today?");
             Console.WriteLine("1. Place Order");
             Console.WriteLine("2. Display Details of a Previous Order by Order Id");
             Console.WriteLine("3. Display All History Order by Store");
             Console.WriteLine("4. Display All History Order by Customer");
-            Console.WriteLine("5. Exit");
+            Console.WriteLine("0. Exit");
             Console.WriteLine("---------------------");
 
-
-            //need to handle exception later
-            do
-            {
-                Console.WriteLine("Please Enter Your Answer(1-5):  ");
-
-                try
-                {
-                    mainMenu = Int32.Parse(Console.ReadLine());
-                    if (mainMenu < 1 || mainMenu > 5)
-                    {
-                        Console.WriteLine("Input must be between 1 to 5");
-                    }
-                }
-                catch (FormatException ex)
-                {
-                    Console.WriteLine("Input must be between 1 to 5");
-                }
-
-            } while (mainMenu < 1 || mainMenu > 5);
-
+            mainMenu = InputCheckInt(1);
 
             switch (mainMenu)
             {
                 case 1:
-                    CusotmerMenu();
+                    CustomerMenu();
                     break;
                 case 2:
                     SearchOrder();
                     break;
                 case 3:
-                    //SearchByName();
+                    //SearchByStore();
                     break;
                 case 4:
-                    //DetailsOrder();
+                    //SearchByCustomer();
                     break;
                 default:
                     break;
             }
         }
 
-        public void CusotmerMenu()
+        public void CustomerMenu()
         {
             int poMenu = 0;
-            string store = "Arlinton";
             Console.WriteLine("If you are a new customer, press 1");
             Console.WriteLine("to add new customer.");
             Console.WriteLine("Or press 2 to search your name."); ;
@@ -73,24 +53,7 @@ namespace GStoreApp.Library.Repo
             Console.WriteLine("----------------------");
             Console.WriteLine("Please Enter: ");
 
-            do
-            {
-                Console.WriteLine("Please Enter Your Answer(0-2):  ");
-
-                try
-                {
-                    poMenu = Int32.Parse(Console.ReadLine());
-                    if (poMenu < 0 || poMenu > 2)
-                    {
-                        Console.WriteLine("Input must be between 0 to 2");
-                    }
-                }
-                catch (FormatException ex)
-                {
-                    Console.WriteLine("Input must be between 0 to 2");
-                }
-
-            } while (poMenu < 0 || poMenu > 2);
+            poMenu = InputCheckInt(2);
 
             switch (poMenu)
             {
@@ -99,11 +62,14 @@ namespace GStoreApp.Library.Repo
                     string fName = Console.ReadLine();
                     Console.WriteLine("Please Enter your last name: ");
                     string lName = Console.ReadLine();
-                    //Console.WriteLine("Please enter you default store: ");
-                    //string store = Console.ReadLine();
-                    Customer newGuys = new Customer(fName, lName, store);
-                    newGuys.AddCustomer(fName, lName, store);
-                    PlaceOrder(newGuys);
+                    Console.WriteLine("Please enter your phone number: ");
+                    Console.WriteLine("The format must be: (XXX)XXX-XXXX:  ");
+                    string phone = Console.ReadLine();
+                    Console.WriteLine("Please enter your default store: ");
+                    int favStore = Int32.Parse(Console.ReadLine());
+                    Repo newGuys = new Repo();
+                    newGuys.AddCustomer(fName, lName, phone, favStore);
+                    PlaceOrder(fName, lName, favStore);
                     break;
 
                 case 2:
@@ -111,9 +77,9 @@ namespace GStoreApp.Library.Repo
                     fName = Console.ReadLine();
                     Console.WriteLine("Please Enter your last name: ");
                     lName = Console.ReadLine();
-                    Customer oldGuys = new Customer(fName, lName, store);
-                    oldGuys.SearchCustomer(fName, lName);
-                    PlaceOrder(oldGuys);
+                    Repo oldGuys = new Repo();
+                    favStore = oldGuys.SearchCustomer(fName, lName);
+                    PlaceOrder(fName, lName, favStore);
                     break;
 
                 default:
@@ -124,7 +90,7 @@ namespace GStoreApp.Library.Repo
             MainMenu();
         }
 
-        public void PlaceOrder( Customer customer )
+        public void PlaceOrder( string fName, string lName, int store )
         {
             Console.WriteLine("Here is our menu today: ");
             Console.WriteLine("1. Nintendo Switch");
@@ -136,22 +102,77 @@ namespace GStoreApp.Library.Repo
             Console.WriteLine("Please Enter 011");
             Console.WriteLine("-----------------------");
             Console.WriteLine("Please Enter you order: ");
-            string order = Console.ReadLine();
-            Repo yourorder = new Repo();
-            yourorder.OrderPlaced(customer, order, store);
+            //check input format
+            string orderAmount = Console.ReadLine();
+            Repo order = new Repo();
+            order.OrderPlaced( fName, lName, store, orderAmount);
 
+            MainMenu();
         }
 
         public void SearchOrder()
         {
             int orderNum;
             Console.WriteLine("Please Enter your order number: ");
+            //Check Input Error
             orderNum = Int32.Parse(Console.ReadLine());
             Console.WriteLine(orderNum);
             Repo search = new Repo();
             search.SearchPastOrder(orderNum);
+            MainMenu();
         }
 
+        public void SearchByStore()
+        {
+            int storeId;
+            Console.WriteLine("Please Enter StoreId");
+            storeId = Int32.Parse(Console.ReadLine());
+            Repo search = new Repo();
+            search.DisplayOrderByStore(storeId);
+        }
 
+        public void SearchByCustomer()
+        {
+            Console.WriteLine("Please Enter the Customer ID:");
+            int customerId = Int32.Parse(Console.ReadLine());
+            Repo search = new Repo();
+            search.DisplayOrderByCustomer(customerId);
+        }
+
+        //menuType = 1 --> MainMenu
+        //         = 2 --> CustomerMenu
+        public int InputCheckInt ( int menuType )
+        {
+            int finalInput = 0;
+            int menuMaxOption = 0;
+            
+            if ( menuType == 1 )
+            {
+                menuMaxOption = 4;
+            } else if ( menuType == 2 ){
+                menuMaxOption = 2;
+            }
+
+            do
+            {
+                Console.WriteLine($"Please Enter Your Answer(0-{menuMaxOption}):  ");
+
+                try
+                {
+                    finalInput = Int32.Parse(Console.ReadLine());
+                    if (finalInput < 0 || finalInput > menuMaxOption)
+                    {
+                        Console.WriteLine($"Input must be between 0 to {menuMaxOption}");
+                    }
+                }
+                catch (FormatException ex)
+                {
+                    Console.WriteLine($"Input must be between 0 to {menuMaxOption}");
+                }
+
+            } while (finalInput < 0 || finalInput > menuMaxOption );
+
+            return finalInput;
+        }
     }
 }
