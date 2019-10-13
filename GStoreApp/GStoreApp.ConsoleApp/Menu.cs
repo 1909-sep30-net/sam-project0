@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using GStoreApp;
+using System.Linq;
 using DB.Repo;
 using GStoreApp.Library;
 
@@ -102,7 +103,7 @@ namespace GStoreApp.ConsoleApp
             MainMenu();
         }
 
-        public void PlaceOrder( Customer cusotmer, Repo repo )
+        public void PlaceOrder( Customer customer, Repo repo )
         {
             Console.WriteLine("Here is our menu today: ");
             Console.WriteLine("1. Nintendo Switch: $199.99");
@@ -112,31 +113,133 @@ namespace GStoreApp.ConsoleApp
             Console.WriteLine("Please Enter 111");
             Console.WriteLine("If you want Xbox*1, PS*1");
             Console.WriteLine("Please Enter 011");
+            Console.WriteLine("Enter 000 to cancel your order and back to main menu.");
             Console.WriteLine("-----------------------");
             Console.WriteLine("Please Enter you order: ");
-            string order = Console.ReadLine();
 
-            int ns = Int32.Parse(order[0].ToString());
-            int xb = Int32.Parse(order[1].ToString());
-            int ps = Int32.Parse(order[2].ToString());
-            decimal totalPrice = (ns * 199.99m + xb * 300.00m + ps * 299.99m ); 
-            Order newOrder = new Order(cusotmer, ns, xb, ps, DateTime.Today, totalPrice);
+            string order;
+            double a = -1;
+            double b = -1;
+            double c = -1;
+            bool amountCheck = a == -1 || b == -1 || c == -1;
+            do
+            {
+                order = Console.ReadLine();
+                if (order.Length == 3)
+                {
+                    a = Char.GetNumericValue(order[0]);
+                    b = Char.GetNumericValue(order[1]);
+                    c = Char.GetNumericValue(order[2]);
+                    amountCheck = a == -1 || b == -1 || c == -1;
+                    Console.WriteLine($"\n{a} {b} {c}\n");
+                    if (order == "000")
+                    {
+                        break;
+                    }
+                    else if (amountCheck)
+                    {
+                        Console.WriteLine("The Order must be 3 numbers.");
+                        Console.WriteLine("Please type again");
+                        Console.WriteLine("Or 000 to back to main menu:  ");
+                    }
+                } else
+                {
+                    Console.WriteLine("The Order must be 3 numbers.");
+                    Console.WriteLine("Please type again");
+                    Console.WriteLine("Or 000 to back to main menu:  ");
+                }
+            } while ( amountCheck );
 
-            //add confirm message
 
-            repo.OrderPlaced(newOrder);
+
+            if (order != "000")
+            {
+                int ns = Int32.Parse(order[0].ToString());
+                int xb = Int32.Parse(order[1].ToString());
+                int ps = Int32.Parse(order[2].ToString());
+                decimal totalPrice = (ns * 199.99m + xb * 300.00m + ps * 299.99m);
+
+                Console.WriteLine("\nYour Order: ");
+                Console.WriteLine($"Customer Name: {customer.FirstName}  {customer.LastName}");
+                Console.WriteLine($"Nintendo Switch:  {ns}");
+                Console.WriteLine($"XBox One:  {xb}");
+                Console.WriteLine($"Playstation 4 Pro:  {ps}");
+                Console.WriteLine($"Total price is: ${totalPrice}");
+                Console.WriteLine($"Is that correct?(y/n)");
+
+                string confirm = "";
+                bool confirmCheck;
+
+                do
+                {
+                    confirm = Console.ReadLine();
+                    confirmCheck = confirm != "n" && confirm != "y";
+                    if (confirmCheck)
+                    {
+                        Console.WriteLine("The input must be y or n");
+                        Console.WriteLine("Plese type again(y/n):  ");
+                    }
+                } while (confirmCheck);
+
+                if (confirm == "y")
+                {
+                    Order newOrder = new Order(customer, ns, xb, ps, DateTime.Today, totalPrice);
+                    repo.OrderPlaced(newOrder);
+                    MainMenu();
+                }
+                else
+                {
+                    PlaceOrder(customer, repo);
+                }
+            }
             MainMenu();
         }
 
         public void SearchOrder()
         {
-            int orderNum;
+            int orderId;
             Console.WriteLine("Please Enter your order number: ");
-            //Check Input Error
-            orderNum = Int32.Parse(Console.ReadLine());
-            Console.WriteLine(orderNum);
+            orderId = InputCheckInt(999999);
             Repo search = new Repo();
-            search.SearchPastOrder(orderNum);
+            if (search.SearchPastOrder(orderId) != null)
+            {
+                int StoreId = search.SearchPastOrder(orderId).StoreId;
+                int customerId = search.SearchPastOrder(orderId).CustomerId;
+                DateTime orderDate = search.SearchPastOrder(orderId).OrderDate;
+                decimal totalPrice = search.SearchPastOrder(orderId).TotalPrice;
+
+                Console.WriteLine("Your Order Detail");
+                Console.WriteLine("-------------------");
+                Console.WriteLine($"Order ID:   {orderId}");
+                Console.WriteLine($"Store ID:   {StoreId}");
+                Console.WriteLine($"Costomer ID:  {customerId}");
+                Console.WriteLine($"Total Price:  {totalPrice}");
+
+                List<OrderItem> items = search.SearchPastOrderItem(orderId).ToList();
+                string productName;
+                for (int i = 0; i < items.Count(); i++)
+                {
+
+                    if (items[i].ProductName == "NSwitch")
+                    {
+                        productName = "NSwitch";
+                    }
+                    else if (items[i].ProductName == "Xbox One")
+                    {
+                        productName = "Xbox One";
+                    }
+                    else
+                    {
+                        productName = "Playstation 4 Pro";
+                    }
+                    Console.WriteLine($"{productName}:  {items[i].Amount}");
+                }
+            } else
+            {
+                Console.WriteLine("Sorry! We cannot find your record.");
+                Console.WriteLine("Back to main menu...");
+            }
+            Console.WriteLine("");
             MainMenu();
         }
 
@@ -161,7 +264,7 @@ namespace GStoreApp.ConsoleApp
         //         = 2 --> CustomerMenu
         public int InputCheckInt ( int menuType )
         {
-            int finalInput = 0;
+            int finalInput = -1;
             int menuMaxOption = 0;
             
             if ( menuType == 1 )
@@ -169,6 +272,9 @@ namespace GStoreApp.ConsoleApp
                 menuMaxOption = 4;
             } else if ( menuType == 2 ){
                 menuMaxOption = 2;
+            } else
+            {
+                menuMaxOption = 999999;
             }
 
             do
@@ -188,7 +294,7 @@ namespace GStoreApp.ConsoleApp
                     Console.WriteLine($"Input must be between 0 to {menuMaxOption}");
                 }
 
-            } while (finalInput < 0 || finalInput > menuMaxOption );
+            } while ( finalInput < 0 || finalInput > menuMaxOption );
 
             return finalInput;
         }

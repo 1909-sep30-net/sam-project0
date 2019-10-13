@@ -77,11 +77,28 @@ namespace DB.Repo
 
         }
 
-        public void SearchPastOrder( int orderid )
+        public l.OrderOverView SearchPastOrder(int orderid)
         {
-            //search past order in the database
-
+            d.OrderOverView overView = dbcontext.OrderOverView.Find(orderid);
+            if ( overView == null)
+            {
+                return null;
+            } else
+            {
+                l.OrderOverView overView1 = Mapper.MapOrderOverView(overView);
+                return overView1;
+            }
+            
         }
+
+        public IEnumerable<l.OrderItem> SearchPastOrderItem(int orderid)
+        {
+            IQueryable<d.OrderItem> orderItems
+                = dbcontext.OrderItem.Where( o => o.OrderId == orderid )
+                                     .AsNoTracking();
+            return orderItems.Select(Mapper.MapOrderItem);
+        }
+
 
         public void DisplayOrderByStore ( int storeId )
         {

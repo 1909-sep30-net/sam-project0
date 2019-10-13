@@ -59,7 +59,7 @@ namespace DB.Repo
             };
         }
 
-        public static OrderItem MapOrderItem(Entities.OrderItem or)
+        public static OrderItem MapOrderItem( Entities.OrderItem or)
         {
             return new OrderItem
             {
@@ -102,6 +102,14 @@ namespace DB.Repo
                 OrderDate = o.OrderDate,
                 CustomerId = o.Customer.CustomerId,
                 TotalPrice = o.TotalPrice
+            };
+        }
+
+        public static Entities.OrderOverView MapOrderOverView( int orderId )
+        {
+            return new Entities.OrderOverView
+            {
+                OrderId = orderId
             };
         }
 
