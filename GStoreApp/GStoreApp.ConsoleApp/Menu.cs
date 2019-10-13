@@ -12,36 +12,36 @@ namespace GStoreApp.ConsoleApp
     {
         public void MainMenu()
         {
-            int mainMenu;
+            //int mainMenu;
 
-            Console.WriteLine("Welcome to GCSotre!");
-            Console.WriteLine("How can I help you today?");
-            Console.WriteLine("1. Place Order");
-            Console.WriteLine("2. Display Details of a Previous Order by Order Id");
-            Console.WriteLine("3. Display All History Order by Store");
-            Console.WriteLine("4. Display All History Order by Customer");
-            Console.WriteLine("0. Exit");
-            Console.WriteLine("---------------------");
+            //Console.WriteLine("Welcome to GCSotre!");
+            //Console.WriteLine("How can I help you today?");
+            //Console.WriteLine("1. Place Order");
+            //Console.WriteLine("2. Display Details of a Previous Order by Order Id");
+            //Console.WriteLine("3. Display All History Order by Store");
+            //Console.WriteLine("4. Display All History Order by Customer");
+            //Console.WriteLine("0. Exit");
+            //Console.WriteLine("---------------------");
 
-            mainMenu = InputCheckInt(1);
+            //mainMenu = InputCheckInt(1);
 
-            switch (mainMenu)
-            {
-                case 1:
-                    CustomerMenu();
-                    break;
-                case 2:
-                    SearchOrder();
-                    break;
-                case 3:
-                    //SearchByStore();
-                    break;
-                case 4:
-                    //SearchByCustomer();
-                    break;
-                default:
-                    break;
-            }
+            //switch (mainMenu)
+            //{
+            //    case 1:
+            //        CustomerMenu();
+            //        break;
+            //    case 2:
+            //        SearchOrder();
+            //        break;
+            //    case 3:
+            //        //SearchByStore();
+            //        break;
+            //    case 4:
+            //        //SearchByCustomer();
+            //        break;
+            //    default:
+            //        break;
+            //}
         }
 
         public void CustomerMenu()
@@ -100,7 +100,7 @@ namespace GStoreApp.ConsoleApp
             }
 
             Console.Clear();
-            MainMenu();
+            //MainMenu();
         }
 
         public void PlaceOrder( Customer customer, Repo repo )
@@ -192,7 +192,7 @@ namespace GStoreApp.ConsoleApp
                     PlaceOrder(customer, repo);
                 }
             }
-            MainMenu();
+            //MainMenu();
         }
 
         public void SearchOrder()
@@ -240,24 +240,72 @@ namespace GStoreApp.ConsoleApp
                 Console.WriteLine("Back to main menu...");
             }
             Console.WriteLine("");
-            MainMenu();
         }
 
         public void SearchByStore()
         {
             int storeId;
             Console.WriteLine("Please Enter StoreId");
-            storeId = Int32.Parse(Console.ReadLine());
+            storeId = InputCheckInt(999999);
+             
             Repo search = new Repo();
-            search.DisplayOrderByStore(storeId);
+            List<OrderOverView> history = search.DisplayOrderByStore(storeId).ToList();
+            if ( history.Count() != 0)
+            {
+                int oId;
+                int cId;
+                DateTime date;
+                decimal p;
+                Console.WriteLine($"Here is Order History at store with Store ID: {storeId}");
+                Console.WriteLine("OrderId, CustomerId, OrderDaTe,          TotalPrice");
+                for( int i = 0; i < history.Count(); i++)
+                {
+                    oId = history[i].OrderId;
+                    cId = history[i].CustomerId;
+                    date = history[i].OrderDate;
+                    p = history[i].TotalPrice;
+                    Console.WriteLine($"{oId}        {cId}           {date}   {p}");
+                }
+            } else
+            {
+                Console.WriteLine("Sorry! There's no record of this store ID.");
+                Console.WriteLine("Back to main menu...");
+            }
+            Console.WriteLine("Press enter to continue.");
+            string stop = Console.ReadLine();
         }
 
         public void SearchByCustomer()
         {
             Console.WriteLine("Please Enter the Customer ID:");
-            int customerId = Int32.Parse(Console.ReadLine());
+            int customerId = InputCheckInt(999999);
             Repo search = new Repo();
-            search.DisplayOrderByCustomer(customerId);
+            List<OrderOverView> history = search.DisplayOrderByCustomer(customerId).ToList();
+
+            if (history.Count() != 0)
+            {
+                int oId;
+                int cId;
+                DateTime date;
+                decimal p;
+                Console.WriteLine($"Here is Order History at store with Customer ID: {customerId}");
+                Console.WriteLine("OrderId, StoreId, OrderDaTe,          TotalPrice");
+                for (int i = 0; i < history.Count(); i++)
+                {
+                    oId = history[i].OrderId;
+                    cId = history[i].StoreId;
+                    date = history[i].OrderDate;
+                    p = history[i].TotalPrice;
+                    Console.WriteLine($"{oId}        {cId}        {date}   {p}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Sorry! There's no record of this customer ID.");
+                Console.WriteLine("Back to main menu...");
+            }
+            Console.WriteLine("Press enter to continue.");
+            string stop = Console.ReadLine();
         }
 
         //menuType = 1 --> MainMenu

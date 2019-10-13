@@ -100,14 +100,22 @@ namespace DB.Repo
         }
 
 
-        public void DisplayOrderByStore ( int storeId )
+        public IEnumerable<l.OrderOverView> DisplayOrderByStore ( int storeId )
         {
             //search order by store id
+            IQueryable<d.OrderOverView> orderHistory
+                = dbcontext.OrderOverView.Where(o => o.StoreId == storeId)
+                                         .AsNoTracking();
+            return orderHistory.Select(Mapper.MapOrderOverView);
         }
 
-        public void DisplayOrderByCustomer( int customerId )
+        public IEnumerable<l.OrderOverView> DisplayOrderByCustomer( int customerId )
         {
             //search order by customer id
+            IQueryable<d.OrderOverView> orderHistory
+                = dbcontext.OrderOverView.Where(o => o.CustomerId == customerId)
+                                         .AsNoTracking();
+            return orderHistory.Select(Mapper.MapOrderOverView);
         }
 
 
