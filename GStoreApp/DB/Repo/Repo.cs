@@ -28,22 +28,69 @@ namespace DB.Repo
             dbcontext.SaveChanges();
         }
 
-        public l.Customer SearchCustomer( l.Customer customer )
+        public IEnumerable<l.Customer> SearchCustomer( l.Customer customer )
         {
             //Search Customer from database
-            d.Customer entity = Mapper.MapCustomer(customer);
+            IQueryable<d.Customer> cusotmerFound
+                = dbcontext.Customer.Where(c => c.LastName == customer.LastName
+                                           && c.FirstName == customer.FirstName);
 
-            entity = dbcontext.Customer.Where(c => c.LastName.Contains(entity.LastName)
-                                                && c.FirstName.Contains(entity.FirstName))
-                                       .First();
-
-            l.Customer customerFound = Mapper.MapCustomer(entity);
+            // IEnumerable<l.Customer> customerFound = Mapper.MapCustomer(entity);
             
-            return customerFound;
+            return cusotmerFound.Select(Mapper.MapCustomer);
         }
 
-        public void OrderPlaced( l.Order order )
+        public string OrderPlaced( l.Order order )
         {
+            IQueryable<d.Inventory> CurrentInventoryQ
+                = dbcontext.Inventory.Where(i => i.StoreId == order.StoreId)
+                                     .AsNoTracking();
+            IEnumerable<l.Inventory> CurrentInventoryE = CurrentInventoryQ.Select(Mapper.MapInventory);
+            List < l.Inventory > invent = CurrentInventoryE.ToList();
+            for ( int j = 0; j < CurrentInventoryE.Count(); j++)
+            {
+                if ( j == 0 )
+                {
+                    if ( invent[j].Amount - order.NSAmount < 0 )
+                    {
+                        return "Order Failed, not enough Inventory";
+                    }
+                    else
+                    {
+                        var nsN = dbcontext.Inventory.Where(i => i.ProductId == j + 1)
+                                                     .First();
+                        nsN.Amount = invent[j].Amount - order.NSAmount;
+                    }
+                } 
+                else if ( j == 1 )
+                {
+                    if (invent[j].Amount - order.XBAmount < 0)
+                    {
+                        return "Order Failed, not enough Inventory";
+                    }
+                    else
+                    {
+                        var xbN = dbcontext.Inventory.Where(i => i.ProductId == j + 1)
+                                                     .First();
+                        xbN.Amount = invent[j].Amount - order.XBAmount;
+                    }
+                }
+                else
+                {
+                    if (invent[j].Amount - order.PSAmount < 0)
+                    {
+                        return "Order Failed, not enough Inventory";
+                    }
+                    else
+                    {
+                        var psN = dbcontext.Inventory.Where(i => i.ProductId == j + 1)
+                                                     .First();
+                        psN.Amount = invent[j].Amount - order.PSAmount;
+                        dbcontext.SaveChanges();
+                    }
+                }
+            }
+
             d.OrderOverView orderOverView = Mapper.MapOrderOverView(order);
             dbcontext.Add(orderOverView);
             dbcontext.SaveChanges();
@@ -73,7 +120,7 @@ namespace DB.Repo
             }
 
             dbcontext.SaveChanges();
-
+            return "Order Success!!";
 
         }
 
@@ -118,6 +165,18 @@ namespace DB.Repo
             return orderHistory.Select(Mapper.MapOrderOverView);
         }
 
-
+        public l.Store CheckIfStoreExists( int storeId)
+        {
+            d.Store store = dbcontext.Store.Find(storeId);
+            if (store == null)
+            {
+                return null;
+            }
+            else
+            {
+                l.Store storeFind = Mapper.MapStore(store);
+                return storeFind;
+            }
+        }
     }
 }

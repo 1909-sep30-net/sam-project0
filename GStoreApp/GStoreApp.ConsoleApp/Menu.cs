@@ -5,45 +5,12 @@ using GStoreApp;
 using System.Linq;
 using DB.Repo;
 using GStoreApp.Library;
+using System.Text.RegularExpressions;
 
 namespace GStoreApp.ConsoleApp
 {
     public class Menu
     {
-        public void MainMenu()
-        {
-            //int mainMenu;
-
-            //Console.WriteLine("Welcome to GCSotre!");
-            //Console.WriteLine("How can I help you today?");
-            //Console.WriteLine("1. Place Order");
-            //Console.WriteLine("2. Display Details of a Previous Order by Order Id");
-            //Console.WriteLine("3. Display All History Order by Store");
-            //Console.WriteLine("4. Display All History Order by Customer");
-            //Console.WriteLine("0. Exit");
-            //Console.WriteLine("---------------------");
-
-            //mainMenu = InputCheckInt(1);
-
-            //switch (mainMenu)
-            //{
-            //    case 1:
-            //        CustomerMenu();
-            //        break;
-            //    case 2:
-            //        SearchOrder();
-            //        break;
-            //    case 3:
-            //        //SearchByStore();
-            //        break;
-            //    case 4:
-            //        //SearchByCustomer();
-            //        break;
-            //    default:
-            //        break;
-            //}
-        }
-
         public void CustomerMenu()
         {
             int poMenu = 0;
@@ -64,17 +31,49 @@ namespace GStoreApp.ConsoleApp
                     string fName = Console.ReadLine();
                     Console.WriteLine("Please Enter your last name: ");
                     string lName = Console.ReadLine();
-                    Console.WriteLine("Please enter your phone number: ");
-                    Console.WriteLine("The format must be: (XXX)XXX-XXXX:  ");
-                    string phone = Console.ReadLine();
+                    Console.WriteLine("Please enter your 10 digit phone number ");
+                    Console.WriteLine("without () or - :   ");
+                    string phone = PhoneCheck();
+                    Console.WriteLine($"Your phone number is: {phone}");
                     Console.WriteLine("Please enter your default store: ");
-                    int favStore = Int32.Parse(Console.ReadLine());
-
-                    Customer customerNew = new Customer(fName, lName, phone, favStore ) ;
-
+                    int favStore = InputCheckInt(999999);
                     Repo newGuys = new Repo();
-                    newGuys.AddCustomer(customerNew);
-                    PlaceOrder(customerNew, newGuys);
+                    Store storeFound = newGuys.CheckIfStoreExists( favStore );
+                    if (storeFound != null)
+                    {
+                        Console.WriteLine($"Your first name is {fName}");
+                        Console.WriteLine($"Your last name is {lName}");
+                        Console.WriteLine($"Your phone number is {phone}");
+                        Console.WriteLine($"Your favorite Store is {storeFound.StoreName}");
+                        Console.WriteLine($"Is That correct?(y/n):   ");
+                        
+                        string confirm = "";
+                        bool confirmCheck;
+
+                        do
+                        {
+                            confirm = Console.ReadLine();
+                            confirmCheck = confirm != "n" && confirm != "y";
+                            if (confirmCheck)
+                            {
+                                Console.WriteLine("The input must be y or n");
+                                Console.WriteLine("Plese type again(y/n):  ");
+                            }
+                        } while (confirmCheck);
+
+                        if (confirm == "y")
+                        {
+                            Customer customerNew = new Customer(fName, lName, phone, favStore);
+                            newGuys.AddCustomer(customerNew);
+                            PlaceOrder(customerNew, newGuys);
+                        }
+
+                    } else
+                    {
+                        Console.WriteLine("Sorry! The Store ID doesn't not exist.");
+                        Console.WriteLine("Please press Enter to back to main menu.");
+                        string back = Console.ReadLine();
+                    }
                     break;
 
                 case 2:
@@ -86,13 +85,43 @@ namespace GStoreApp.ConsoleApp
                     Customer customerOld = new Customer(fName, lName);
 
                     Repo oldGuys = new Repo();
-                    Customer customerFound = oldGuys.SearchCustomer(customerOld);
-                    Console.WriteLine(customerFound.CustomerId);
-                    Console.WriteLine(customerFound.FirstName);
-                    Console.WriteLine(customerFound.LastName);
-                    Console.WriteLine(customerFound.FavoriteStore);
-                    // call repo to get data from database, then send back here
-                    PlaceOrder(customerFound, oldGuys);
+                    List<Customer> customerFound = oldGuys.SearchCustomer(customerOld).ToList();
+                    if (customerFound.Count > 0 )
+                    {
+                        for (int i = 0; i < customerFound.Count; i++)
+                        {
+                            Console.WriteLine(customerFound[i].FirstName);
+                            Console.WriteLine(customerFound[i].LastName);
+                            Console.WriteLine(customerFound[i].PhoneNumber);
+                            Console.WriteLine(customerFound[i].FavoriteStore);
+
+                            Console.WriteLine($"Is that correct?(y/n)");
+
+                            string confirm = "";
+                            bool confirmCheck;
+
+                            do
+                            {
+                                confirm = Console.ReadLine();
+                                confirmCheck = confirm != "n" && confirm != "y";
+                                if (confirmCheck)
+                                {
+                                    Console.WriteLine("The input must be y or n");
+                                    Console.WriteLine("Plese type again(y/n):  ");
+                                }
+                            } while (confirmCheck);
+
+                            if (confirm == "y")
+                            {
+                                PlaceOrder(customerFound[i], oldGuys);
+                            }
+                        }
+                    } else
+                    {
+                        Console.WriteLine("Sorry! We don't have your record.");
+                        Console.WriteLine("Press enter to back to main menu");
+                        string back = Console.ReadLine();
+                    }
                     break;
 
                 default:
@@ -169,7 +198,7 @@ namespace GStoreApp.ConsoleApp
 
                 string confirm = "";
                 bool confirmCheck;
-
+                int storeId = (int)customer.FavoriteStore;
                 do
                 {
                     confirm = Console.ReadLine();
@@ -183,18 +212,14 @@ namespace GStoreApp.ConsoleApp
 
                 if (confirm == "y")
                 {
-                    Order newOrder = new Order(customer, ns, xb, ps, DateTime.Today, totalPrice);
-                    repo.OrderPlaced(newOrder);
-                    MainMenu();
-                }
-                else
-                {
-                    PlaceOrder(customer, repo);
+                    Order newOrder = new Order(customer, ns, xb, ps, DateTime.Today, totalPrice, storeId);
+                    string success = repo.OrderPlaced(newOrder);
+                    Console.WriteLine(success);
+                    Console.WriteLine("Press Enter to continue");
+                    string back = Console.ReadLine();
                 }
             }
-            //MainMenu();
         }
-
         public void SearchOrder()
         {
             int orderId;
@@ -345,6 +370,26 @@ namespace GStoreApp.ConsoleApp
             } while ( finalInput < 0 || finalInput > menuMaxOption );
 
             return finalInput;
+        }
+
+        public string PhoneCheck()
+        {
+            string phoneOp;
+            do
+            {
+                string phoneIn = Console.ReadLine();
+                phoneOp = Regex.Replace(phoneIn, @"[^0-9]+", "");
+                if (phoneOp.Length != 10)
+                {
+                    Console.WriteLine("The input must be 10 digit number");
+                    Console.WriteLine("Please type again:  ");
+                }
+
+            } while (phoneOp.Length != 10);
+
+            phoneOp = "(" + phoneOp.Substring(0, 3) + ")" + phoneOp.Substring(3, 3)
+                    + "-" + phoneOp.Substring(6, 4);
+            return phoneOp;
         }
     }
 }

@@ -12,8 +12,10 @@ namespace GStoreApp.Library
         public int PSAmount { get; set; }
         public DateTime OrderDate { get; set; }
         public decimal TotalPrice { get; set; }
+        public int StoreId { get; set; }
 
-        public Order(Customer customer, int nSAmount, int xBAmount, int pSAmount, DateTime orderDate, decimal totalPrice)
+        public Order(Customer customer, int nSAmount, int xBAmount, int pSAmount,
+                     DateTime orderDate, decimal totalPrice, int storeId)
         {
             Customer = customer;
             NSAmount = nSAmount;
@@ -21,6 +23,7 @@ namespace GStoreApp.Library
             PSAmount = pSAmount;
             OrderDate = orderDate;
             TotalPrice = totalPrice;
+            StoreId = storeId;
         }
     }
   
