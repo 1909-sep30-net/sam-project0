@@ -13,4 +13,10 @@
     <PackageReference Include="coverlet.collector" Version="1.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DB\DB.csproj" />
+    <ProjectReference Include="..\GStoreApp.ConsoleApp\GStoreApp.ConsoleApp.csproj" />
+    <ProjectReference Include="..\GStoreApp.Library2\GStoreApp.Library.csproj" />
+  </ItemGroup>
+
 </Project>

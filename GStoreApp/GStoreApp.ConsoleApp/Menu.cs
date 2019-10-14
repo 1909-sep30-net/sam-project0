@@ -45,16 +45,15 @@ namespace GStoreApp.ConsoleApp
                     Console.WriteLine("Please enter your 10 digit phone number ");
                     Console.WriteLine("without () or - :   ");
                     string phone = PhoneCheck();
-                    Console.WriteLine($"Your phone number is: {phone}");
                     Console.WriteLine("Please enter your default store: ");
                     int favStore = InputCheckInt(999999);
                     Repo newGuys = new Repo();
                     Store storeFound = newGuys.CheckIfStoreExists( favStore );
                     if (storeFound != null)
                     {
-                        Console.WriteLine($"Your first name is {fName}");
-                        Console.WriteLine($"Your last name is {lName}");
-                        Console.WriteLine($"Your phone number is {phone}");
+                        Console.WriteLine($"Your first name is     {fName}");
+                        Console.WriteLine($"Your last name is      {lName}");
+                        Console.WriteLine($"Your phone number is   {phone}");
                         Console.WriteLine($"Your favorite Store is {storeFound.StoreName}");
                         Console.WriteLine($"Is That correct?(y/n):   ");
                         
@@ -77,6 +76,7 @@ namespace GStoreApp.ConsoleApp
                         {
                             Customer customerNew = new Customer(fName, lName, phone, favStore);
                             newGuys.AddCustomer(customerNew);
+                            Console.WriteLine("");
                             //PlaceOrder(customerNew, newGuys);
                         }
 
@@ -99,8 +99,10 @@ namespace GStoreApp.ConsoleApp
                 case 2:
                     Console.WriteLine("Please Enter your first name:");
                     fName = Console.ReadLine();
+                    Console.WriteLine("");
                     Console.WriteLine("Please Enter your last name: ");
                     lName = Console.ReadLine();
+                    Console.WriteLine("");
 
                     Customer customerOld = new Customer(fName, lName);
 
@@ -110,11 +112,11 @@ namespace GStoreApp.ConsoleApp
                     {
                         for (int i = 0; i < customerFound.Count; i++)
                         {
-                            Console.WriteLine(customerFound[i].FirstName);
-                            Console.WriteLine(customerFound[i].LastName);
-                            Console.WriteLine(customerFound[i].PhoneNumber);
-                            Console.WriteLine(customerFound[i].FavoriteStore);
-
+                            Console.WriteLine($"Your First Name is:     {customerFound[i].FirstName}");
+                            Console.WriteLine($"Your Last Name is:      {customerFound[i].LastName}");
+                            Console.WriteLine($"Your Phone Number is:   {customerFound[i].PhoneNumber}");
+                            Console.WriteLine($"Your Favorite Store is: {customerFound[i].FavoriteStore}");
+                            Console.WriteLine("----------");
                             Console.WriteLine($"Is that correct?(y/n)");
 
                             string confirm = "";
@@ -126,6 +128,7 @@ namespace GStoreApp.ConsoleApp
                                 confirmCheck = confirm != "n" && confirm != "y";
                                 if (confirmCheck)
                                 {
+                                    Console.WriteLine("");
                                     Console.WriteLine("The input must be y or n");
                                     Console.WriteLine("Plese type again(y/n):  ");
                                     logger.Warn($"Invalid Input:  {confirmCheck}");
@@ -166,10 +169,11 @@ namespace GStoreApp.ConsoleApp
             Product nsP = repo.SearchProduct(1);
             Product xbP = repo.SearchProduct(2);
             Product psP = repo.SearchProduct(3);
+            Console.WriteLine("");
             Console.WriteLine("Here is our menu today: ");
-            Console.WriteLine($"1. {nsP.ProductName}: ${nsP.UnitPrice}");
-            Console.WriteLine($"2. {xbP.ProductName}: ${xbP.UnitPrice}");
-            Console.WriteLine($"3. {psP.ProductName}: ${psP.UnitPrice}");
+            Console.WriteLine($"{nsP.ProductName,-0:G}: ${nsP.UnitPrice, -50}");
+            Console.WriteLine($"{xbP.ProductName,-0:G}: ${xbP.UnitPrice, -50}");
+            Console.WriteLine($"{psP.ProductName,-0:G}: ${psP.UnitPrice, -50}");
             Console.WriteLine("If you want NS*1, Xbox*1, PS4*1,");
             Console.WriteLine("Please Enter 111");
             Console.WriteLine("If you want Xbox*1, PS*1");
@@ -220,14 +224,14 @@ namespace GStoreApp.ConsoleApp
                 int ns = Int32.Parse(order[0].ToString());
                 int xb = Int32.Parse(order[1].ToString());
                 int ps = Int32.Parse(order[2].ToString());
-                decimal totalPrice = (ns * 199.99m + xb * 300.00m + ps * 299.99m);
+                decimal totalPrice = (ns * nsP.UnitPrice + xb * xbP.UnitPrice + ps * psP.UnitPrice);
 
                 Console.WriteLine("\nYour Order: ");
-                Console.WriteLine($"Customer Name: {customer.FirstName}  {customer.LastName}");
-                Console.WriteLine($"Nintendo Switch:  {ns}");
-                Console.WriteLine($"XBox One:  {xb}");
-                Console.WriteLine($"Playstation 4 Pro:  {ps}");
-                Console.WriteLine($"Total price is: ${totalPrice}");
+                Console.WriteLine($"    Customer Name:    {customer.FirstName} {customer.LastName}");
+                Console.WriteLine($"  Nintendo Switch:    {ns}");
+                Console.WriteLine($"         XBox One:    {xb}");
+                Console.WriteLine($"Playstation 4 Pro:    {ps}");
+                Console.WriteLine($"Total price is:      ${totalPrice}");
                 Console.WriteLine($"Is that correct?(y/n)");
 
                 string confirm = "";
@@ -275,8 +279,8 @@ namespace GStoreApp.ConsoleApp
 
                 Console.WriteLine("Your Order Detail");
                 Console.WriteLine("-------------------");
-                Console.WriteLine($"Order ID:   {orderId}");
-                Console.WriteLine($"Store ID:   {StoreId}");
+                Console.WriteLine($"Order ID:     {orderId}");
+                Console.WriteLine($"Store ID:     {StoreId}");
                 Console.WriteLine($"Costomer ID:  {customerId}");
                 Console.WriteLine($"Total Price:  {totalPrice}");
 
