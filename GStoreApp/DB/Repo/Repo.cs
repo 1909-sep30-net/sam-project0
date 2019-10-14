@@ -120,7 +120,8 @@ namespace DB.Repo
             }
 
             d.OrderOverView orderOverView = Mapper.MapOrderOverView(order);
-            dbcontext.AddAsync(orderOverView);
+            dbcontext.Add(orderOverView);
+            logger.Info("A new order overview is added into database");
             dbcontext.SaveChanges();
 
             int orderId = orderOverView.OrderId;
