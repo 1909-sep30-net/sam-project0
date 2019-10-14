@@ -6,11 +6,14 @@ using System.Linq;
 using DB.Repo;
 using GStoreApp.Library;
 using System.Text.RegularExpressions;
+using NLog;
+
 
 namespace GStoreApp.ConsoleApp
 {
     public class Menu
     {
+        private static readonly ILogger logger = LogManager.GetCurrentClassLogger();
         public void CustomerMenu()
         {
             int poMenu = 0;
@@ -58,6 +61,7 @@ namespace GStoreApp.ConsoleApp
                             {
                                 Console.WriteLine("The input must be y or n");
                                 Console.WriteLine("Plese type again(y/n):  ");
+                                logger.Warn($"Invalid Input:  {confirmCheck}");
                             }
                         } while (confirmCheck);
 
@@ -65,7 +69,7 @@ namespace GStoreApp.ConsoleApp
                         {
                             Customer customerNew = new Customer(fName, lName, phone, favStore);
                             newGuys.AddCustomer(customerNew);
-                            PlaceOrder(customerNew, newGuys);
+                            //PlaceOrder(customerNew, newGuys);
                         }
 
                     } else
@@ -108,6 +112,7 @@ namespace GStoreApp.ConsoleApp
                                 {
                                     Console.WriteLine("The input must be y or n");
                                     Console.WriteLine("Plese type again(y/n):  ");
+                                    logger.Warn($"Invalid Input:  {confirmCheck}");
                                 }
                             } while (confirmCheck);
 
@@ -207,6 +212,7 @@ namespace GStoreApp.ConsoleApp
                     {
                         Console.WriteLine("The input must be y or n");
                         Console.WriteLine("Plese type again(y/n):  ");
+                        logger.Warn($"Invalid Input:  {confirmCheck}");
                     }
                 } while (confirmCheck);
 
@@ -262,6 +268,7 @@ namespace GStoreApp.ConsoleApp
             } else
             {
                 Console.WriteLine("Sorry! We cannot find your record.");
+                logger.Info($"There no record for Order ID: {orderId}");
                 Console.WriteLine("Back to main menu...");
             }
             Console.WriteLine("");
@@ -294,6 +301,7 @@ namespace GStoreApp.ConsoleApp
             } else
             {
                 Console.WriteLine("Sorry! There's no record of this store ID.");
+                logger.Info($"There no record for Store ID: {storeId}");
                 Console.WriteLine("Back to main menu...");
             }
             Console.WriteLine("Press enter to continue.");
@@ -327,6 +335,7 @@ namespace GStoreApp.ConsoleApp
             else
             {
                 Console.WriteLine("Sorry! There's no record of this customer ID.");
+                logger.Info($"There no record for Customer ID: {customerId}");
                 Console.WriteLine("Back to main menu...");
             }
             Console.WriteLine("Press enter to continue.");
@@ -360,11 +369,13 @@ namespace GStoreApp.ConsoleApp
                     if (finalInput < 0 || finalInput > menuMaxOption)
                     {
                         Console.WriteLine($"Input must be between 0 to {menuMaxOption}");
+                        logger.Warn("Input value is Invalid.");
                     }
                 }
                 catch (FormatException ex)
                 {
                     Console.WriteLine($"Input must be between 0 to {menuMaxOption}");
+                    logger.Error($"Input format is invalid.  {ex}");
                 }
 
             } while ( finalInput < 0 || finalInput > menuMaxOption );
@@ -382,6 +393,7 @@ namespace GStoreApp.ConsoleApp
                 if (phoneOp.Length != 10)
                 {
                     Console.WriteLine("The input must be 10 digit number");
+                    logger.Warn("The input of phone number is wrong.");
                     Console.WriteLine("Please type again:  ");
                 }
 

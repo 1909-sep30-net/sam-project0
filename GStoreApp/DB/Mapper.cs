@@ -8,11 +8,12 @@ using GStoreApp.Library;
 namespace DB.Repo
 {
     /// <summary>
-    /// Maps an Entity Framework restaurant entity to a business model,
-    /// including all reviews if present.
+    /// 
+    /// 
     /// </summary>
     public static class Mapper
     {
+
         public static Customer MapCustomer(Entities.Customer customer)
         {
             return new Customer

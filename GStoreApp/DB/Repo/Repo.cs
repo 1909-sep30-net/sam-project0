@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using d = DB.Entities;
 using l = GStoreApp.Library;
+using NLog;
 
 namespace DB.Repo
 {   
@@ -12,6 +13,7 @@ namespace DB.Repo
     public class Repo
     {   
         private static d.GCStoreContext dbcontext;
+        private static readonly ILogger logger = LogManager.GetCurrentClassLogger();
 
         public Repo()
         {
@@ -26,6 +28,7 @@ namespace DB.Repo
             d.Customer entity = Mapper.MapCustomer(customer);
             dbcontext.Add(entity);
             dbcontext.SaveChanges();
+            logger.Info("Added customer into Customer table.");
         }
 
         public IEnumerable<l.Customer> SearchCustomer( l.Customer customer )
@@ -54,6 +57,7 @@ namespace DB.Repo
                     if ( invent[j].Amount - order.NSAmount < 0 )
                     {
                         return "Order Failed, not enough Inventory";
+                        logger.Warn($"Stoed ID: {order.StoreId} Doesn't have enough NSwitch in stock.");
                     }
                     else
                     {
@@ -67,6 +71,7 @@ namespace DB.Repo
                     if (invent[j].Amount - order.XBAmount < 0)
                     {
                         return "Order Failed, not enough Inventory";
+                        logger.Warn($"Stoed ID: {order.StoreId} Doesn't have enough NSwitch in stock.");
                     }
                     else
                     {
@@ -80,6 +85,7 @@ namespace DB.Repo
                     if (invent[j].Amount - order.PSAmount < 0)
                     {
                         return "Order Failed, not enough Inventory";
+                        logger.Warn($"Stoed ID: {order.StoreId} Doesn't have enough NSwitch in stock.");
                     }
                     else
                     {
@@ -87,12 +93,13 @@ namespace DB.Repo
                                                      .First();
                         psN.Amount = invent[j].Amount - order.PSAmount;
                         dbcontext.SaveChanges();
+                        logger.Info("Inventory updated");
                     }
                 }
             }
 
             d.OrderOverView orderOverView = Mapper.MapOrderOverView(order);
-            dbcontext.Add(orderOverView);
+            dbcontext.AddAsync(orderOverView);
             dbcontext.SaveChanges();
 
             int orderId = orderOverView.OrderId;
@@ -103,6 +110,7 @@ namespace DB.Repo
                 string name1 = "NSwitch";
                 d.OrderItem itemN = Mapper.MapOrderItem(amount1, orderId, name1);
                 dbcontext.Add(itemN);
+                logger.Info($"Order detail for {orderId} and {name1} is added to database");
             }
             if (order.XBAmount != 0)
             {
@@ -110,6 +118,7 @@ namespace DB.Repo
                 string name2 = "Xbox One";
                 d.OrderItem itemX = Mapper.MapOrderItem(amount2, orderId, name2);
                 dbcontext.Add(itemX);
+                logger.Info($"Order detail for {orderId} and {name2} is added to database");
             }
             if (order.PSAmount != 0)
             {
@@ -117,6 +126,7 @@ namespace DB.Repo
                 string name3 = "Playstation 4 Pro";
                 d.OrderItem itemP = Mapper.MapOrderItem(amount3, orderId, name3);
                 dbcontext.Add(itemP);
+                logger.Info($"Order detail for {orderId} and {name3} is added to database");
             }
 
             dbcontext.SaveChanges();
