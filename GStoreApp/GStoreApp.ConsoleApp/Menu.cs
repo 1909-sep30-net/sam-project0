@@ -282,6 +282,7 @@ namespace GStoreApp.ConsoleApp
                 Console.WriteLine($"Order ID:     {orderId}");
                 Console.WriteLine($"Store ID:     {StoreId}");
                 Console.WriteLine($"Costomer ID:  {customerId}");
+                Console.WriteLine($"Order Date:   {orderDate}");
                 Console.WriteLine($"Total Price:  {totalPrice}");
 
                 List<OrderItem> items = search.SearchPastOrderItem(orderId).ToList();
