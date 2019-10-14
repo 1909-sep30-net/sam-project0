@@ -10,5 +10,12 @@ namespace GStoreApp.Library
         public string ProductName { get; set; }
         public decimal UnitPrice { get; set; }
 
+        public Product() { }
+
+        public Product(string pName, decimal price)
+        {
+            ProductName = pName;
+            UnitPrice = price;
+        }
     }
 }

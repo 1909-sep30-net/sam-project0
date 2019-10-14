@@ -14,6 +14,10 @@ namespace GStoreApp.ConsoleApp
     public class Menu
     {
         private static readonly ILogger logger = LogManager.GetCurrentClassLogger();
+        /// <summary>
+        /// Customer menu include searching current customer and adding new customer
+        /// After that will go to placing order menu.
+        /// </summary>
         public void CustomerMenu()
         {
             int poMenu = 0;
@@ -29,6 +33,10 @@ namespace GStoreApp.ConsoleApp
 
             switch (poMenu)
             {
+                ///<summary>
+                ///Function to add new customer, then pass it to data access project
+                ///include firtname, last name, phone number and favorite store.
+                ///</summary>
                 case 1:
                     Console.WriteLine("Please Enter your first name:");
                     string fName = Console.ReadLine();
@@ -80,6 +88,14 @@ namespace GStoreApp.ConsoleApp
                     }
                     break;
 
+                ///<summary>
+                ///Function to search a existed customer
+                ///Via his/her first name and last name
+                ///then pass them to data access project to get the result
+                ///</summary>
+                ///<remark>
+                ///if the result is more then 1, add new input(phone number or id to get the exact one.
+                ///</remark>
                 case 2:
                     Console.WriteLine("Please Enter your first name:");
                     fName = Console.ReadLine();
@@ -119,6 +135,7 @@ namespace GStoreApp.ConsoleApp
                             if (confirm == "y")
                             {
                                 PlaceOrder(customerFound[i], oldGuys);
+                                break;
                             }
                         }
                     } else
@@ -137,12 +154,22 @@ namespace GStoreApp.ConsoleApp
             //MainMenu();
         }
 
+        /// <summary>
+        /// Function to place an order from user input
+        /// via N number's string, we can place an order for multiple products
+        /// </summary>
+        /// <param name="customer"></param>
+        /// <param name="repo"></param>
         public void PlaceOrder( Customer customer, Repo repo )
         {
+
+            Product nsP = repo.SearchProduct(1);
+            Product xbP = repo.SearchProduct(2);
+            Product psP = repo.SearchProduct(3);
             Console.WriteLine("Here is our menu today: ");
-            Console.WriteLine("1. Nintendo Switch: $199.99");
-            Console.WriteLine("2. Xbox ONE: $300.00");
-            Console.WriteLine("3. Playstation 4 Pro: $299.99");
+            Console.WriteLine($"1. {nsP.ProductName}: ${nsP.UnitPrice}");
+            Console.WriteLine($"2. {xbP.ProductName}: ${xbP.UnitPrice}");
+            Console.WriteLine($"3. {psP.ProductName}: ${psP.UnitPrice}");
             Console.WriteLine("If you want NS*1, Xbox*1, PS4*1,");
             Console.WriteLine("Please Enter 111");
             Console.WriteLine("If you want Xbox*1, PS*1");
@@ -165,7 +192,7 @@ namespace GStoreApp.ConsoleApp
                     b = Char.GetNumericValue(order[1]);
                     c = Char.GetNumericValue(order[2]);
                     amountCheck = a == -1 || b == -1 || c == -1;
-                    Console.WriteLine($"\n{a} {b} {c}\n");
+                    // Console.WriteLine($"\n{a} {b} {c}\n");
                     if (order == "000")
                     {
                         break;
@@ -175,12 +202,14 @@ namespace GStoreApp.ConsoleApp
                         Console.WriteLine("The Order must be 3 numbers.");
                         Console.WriteLine("Please type again");
                         Console.WriteLine("Or 000 to back to main menu:  ");
+                        logger.Warn("Invalid format Input");
                     }
                 } else
                 {
                     Console.WriteLine("The Order must be 3 numbers.");
                     Console.WriteLine("Please type again");
                     Console.WriteLine("Or 000 to back to main menu:  ");
+                    logger.Warn("Invalid length Input");
                 }
             } while ( amountCheck );
 
@@ -226,6 +255,11 @@ namespace GStoreApp.ConsoleApp
                 }
             }
         }
+
+        /// <summary>
+        /// Search past order detail by input order id
+        /// then pass it to data access project to get the result
+        /// </summary>
         public void SearchOrder()
         {
             int orderId;
@@ -274,6 +308,10 @@ namespace GStoreApp.ConsoleApp
             Console.WriteLine("");
         }
 
+        /// <summary>
+        /// Search and display all order overview for specific by store id
+        /// then pass it to data access project and get the result
+        /// </summary>
         public void SearchByStore()
         {
             int storeId;
@@ -308,6 +346,10 @@ namespace GStoreApp.ConsoleApp
             string stop = Console.ReadLine();
         }
 
+        /// <summary>
+        /// search and display order overview for specific customer by customer id
+        /// then pass it into data access porject and get the result
+        /// </summary>
         public void SearchByCustomer()
         {
             Console.WriteLine("Please Enter the Customer ID:");
@@ -342,8 +384,11 @@ namespace GStoreApp.ConsoleApp
             string stop = Console.ReadLine();
         }
 
-        //menuType = 1 --> MainMenu
-        //         = 2 --> CustomerMenu
+        /// <summary>
+        /// If UI input should be a number, check the input format and range here
+        /// </summary>
+        /// <param name="menuType"></param>
+        /// <returns>will return correct input</returns>
         public int InputCheckInt ( int menuType )
         {
             int finalInput = -1;
@@ -383,6 +428,12 @@ namespace GStoreApp.ConsoleApp
             return finalInput;
         }
 
+        /// <summary>
+        /// Function to check phone number
+        /// via take out all non-numeric value, then check the length
+        /// finally, add () and - into phone number to adjust to format
+        /// </summary>
+        /// <returns></returns>
         public string PhoneCheck()
         {
             string phoneOp;

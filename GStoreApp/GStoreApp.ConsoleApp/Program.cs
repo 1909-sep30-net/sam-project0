@@ -10,6 +10,8 @@ namespace GStoreApp.ConsoleApp
             Menu m = new Menu();
 
             /// <summary>
+            /// Main Menu of the UI.
+            /// </summary>
             do
             {
                 Console.WriteLine("Welcome to GCSotre!");

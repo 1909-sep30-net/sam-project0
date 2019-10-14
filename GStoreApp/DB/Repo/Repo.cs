@@ -15,12 +15,21 @@ namespace DB.Repo
         private static d.GCStoreContext dbcontext;
         private static readonly ILogger logger = LogManager.GetCurrentClassLogger();
 
+        /// <summary>
+        /// Start up a new Database Context controller
+        /// </summary>
         public Repo()
         {
             var optionsBuilder = new DbContextOptionsBuilder<d.GCStoreContext>();
             optionsBuilder.UseSqlServer(Config.connectionString);
             dbcontext = new d.GCStoreContext(optionsBuilder.Options);
         }
+
+        /// <summary>
+        /// Function to add new customer into database 
+        /// via the parameter: Customer object from UI
+        /// </summary>
+        /// <param name="customer"></param>
         public void AddCustomer(l.Customer customer)
         {
             //Add Customer Data into database
@@ -31,6 +40,12 @@ namespace DB.Repo
             logger.Info("Added customer into Customer table.");
         }
 
+        /// <summary>
+        /// Function to search current customer in database
+        /// then pass the result back to UI
+        /// </summary>
+        /// <param name="customer"></param>
+        /// <returns>IEnumerable Collection of Library.Customer object</returns>
         public IEnumerable<l.Customer> SearchCustomer( l.Customer customer )
         {
             //Search Customer from database
@@ -43,6 +58,12 @@ namespace DB.Repo
             return cusotmerFound.Select(Mapper.MapCustomer);
         }
 
+        /// <summary>
+        /// Function to Add new order into datebase include: OrderOverView, OrderItem
+        /// And Update Inventory for specific store
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns>order success or fail message</returns>
         public string OrderPlaced( l.Order order )
         {
             IQueryable<d.Inventory> CurrentInventoryQ
@@ -134,6 +155,12 @@ namespace DB.Repo
 
         }
 
+        /// <summary>
+        /// Function to search past one order detail via order id
+        /// it will search from data table: OrderOverview
+        /// </summary>
+        /// <param name="orderid"></param>
+        /// <returns></returns>
         public l.OrderOverView SearchPastOrder(int orderid)
         {
             d.OrderOverView overView = dbcontext.OrderOverView.Find(orderid);
@@ -148,6 +175,12 @@ namespace DB.Repo
             
         }
 
+        /// <summary>
+        /// Function to search past one order detail via order id
+        /// it will search from data table: OrderItem
+        /// </summary>
+        /// <param name="orderid"></param>
+        /// <returns></returns>
         public IEnumerable<l.OrderItem> SearchPastOrderItem(int orderid)
         {
             IQueryable<d.OrderItem> orderItems
@@ -156,7 +189,11 @@ namespace DB.Repo
             return orderItems.Select(Mapper.MapOrderItem);
         }
 
-
+        /// <summary>
+        /// search the database and pass the order history back to UI via store ID
+        /// </summary>
+        /// <param name="storeId"></param>
+        /// <returns></returns>
         public IEnumerable<l.OrderOverView> DisplayOrderByStore ( int storeId )
         {
             //search order by store id
@@ -166,6 +203,11 @@ namespace DB.Repo
             return orderHistory.Select(Mapper.MapOrderOverView);
         }
 
+        /// <summary>
+        /// search the database and pass the order history back to UI via store ID
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <returns></returns>
         public IEnumerable<l.OrderOverView> DisplayOrderByCustomer( int customerId )
         {
             //search order by customer id
@@ -175,6 +217,12 @@ namespace DB.Repo
             return orderHistory.Select(Mapper.MapOrderOverView);
         }
 
+        /// <summary>
+        /// while adding new customer, search database to ckeck if the store is existed
+        /// when the customer type in favorite store
+        /// </summary>
+        /// <param name="storeId"></param>
+        /// <returns></returns>
         public l.Store CheckIfStoreExists( int storeId)
         {
             d.Store store = dbcontext.Store.Find(storeId);
@@ -187,6 +235,25 @@ namespace DB.Repo
                 l.Store storeFind = Mapper.MapStore(store);
                 return storeFind;
             }
+        }
+
+        /// <summary>
+        /// while placing an order, search database to retrieve current product and price
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <returns></returns>
+        public l.Product SearchProduct( int productId )
+        {
+             d.Product product = dbcontext.Product.Find(productId);
+             if (product == null)
+             {
+                 return null;
+             }
+             else
+             {
+                 l.Product storeFind = Mapper.MapProduct(product);
+                 return storeFind;
+             }
         }
     }
 }
