@@ -155,7 +155,5 @@ namespace DB.Repo
                 Postal = s.Postal
             };
         }
-
-        
     }
 }

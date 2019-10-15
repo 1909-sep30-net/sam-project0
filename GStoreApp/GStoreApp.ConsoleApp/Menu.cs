@@ -28,8 +28,15 @@ namespace GStoreApp.ConsoleApp
             Console.WriteLine("press 0 to back to Mainmenu.");
             Console.WriteLine("----------------------");
             Console.WriteLine("Please Enter: ");
-
-            poMenu = InputCheckInt(2);
+            try
+            {
+                poMenu = Int32.Parse(Console.ReadLine());
+            }
+            catch (FormatException ex)
+            {
+                logger.Error("Invalid input format  " + ex.Message);
+                poMenu = InputCheckInt( -1, 2 );
+            }
 
             switch (poMenu)
             {
@@ -44,9 +51,11 @@ namespace GStoreApp.ConsoleApp
                     string lName = Console.ReadLine();
                     Console.WriteLine("Please enter your 10 digit phone number ");
                     Console.WriteLine("without () or - :   ");
-                    string phone = PhoneCheck();
+                    string phone = Console.ReadLine();
+                    phone = PhoneCheck(phone);
                     Console.WriteLine("Please enter your default store: ");
-                    int favStore = InputCheckInt(999999);
+                    int favStore = Int32.Parse(Console.ReadLine());
+                    favStore = InputCheckInt(favStore, 999999);
                     Repo newGuys = new Repo();
                     Store storeFound = newGuys.CheckIfStoreExists( favStore );
                     if (storeFound != null)
@@ -266,9 +275,16 @@ namespace GStoreApp.ConsoleApp
         /// </summary>
         public void SearchOrder()
         {
-            int orderId;
+            int orderId = 0;
             Console.WriteLine("Please Enter your order number: ");
-            orderId = InputCheckInt(999999);
+            try
+            {
+                orderId = Int32.Parse(Console.ReadLine());
+            }
+            catch ( FormatException ex )
+            {
+                orderId = InputCheckInt(orderId, 999999);
+            }
             Repo search = new Repo();
             if (search.SearchPastOrder(orderId) != null)
             {
@@ -319,9 +335,16 @@ namespace GStoreApp.ConsoleApp
         /// </summary>
         public void SearchByStore()
         {
-            int storeId;
+            int storeId =0;
             Console.WriteLine("Please Enter StoreId");
-            storeId = InputCheckInt(999999);
+            try
+            {
+                storeId = Int32.Parse(Console.ReadLine());
+            }
+            catch ( FormatException ex )
+            {
+                storeId = InputCheckInt(storeId, 999999);
+            }
              
             Repo search = new Repo();
             List<OrderOverView> history = search.DisplayOrderByStore(storeId).ToList();
@@ -358,7 +381,15 @@ namespace GStoreApp.ConsoleApp
         public void SearchByCustomer()
         {
             Console.WriteLine("Please Enter the Customer ID:");
-            int customerId = InputCheckInt(999999);
+            int customerId = 0;
+            try
+            {
+                customerId = Int32.Parse(Console.ReadLine());
+            }
+            catch ( FormatException ex )
+            {
+                customerId = InputCheckInt(customerId, 999999);
+            }
             Repo search = new Repo();
             List<OrderOverView> history = search.DisplayOrderByCustomer(customerId).ToList();
 
@@ -394,9 +425,9 @@ namespace GStoreApp.ConsoleApp
         /// </summary>
         /// <param name="menuType"></param>
         /// <returns>will return correct input</returns>
-        public int InputCheckInt ( int menuType )
+        public int InputCheckInt ( int input , int menuType )
         {
-            int finalInput = -1;
+            int finalInput = input;
             int menuMaxOption = 0;
             
             if ( menuType == 1 )
@@ -409,8 +440,9 @@ namespace GStoreApp.ConsoleApp
                 menuMaxOption = 999999;
             }
 
-            do
+            while (finalInput < 0 || finalInput > menuMaxOption)
             {
+                Console.WriteLine($"Input must be between 0 to {menuMaxOption}");
                 Console.WriteLine($"Please Enter Your Answer(0-{menuMaxOption}):  ");
 
                 try
@@ -418,17 +450,16 @@ namespace GStoreApp.ConsoleApp
                     finalInput = Int32.Parse(Console.ReadLine());
                     if (finalInput < 0 || finalInput > menuMaxOption)
                     {
-                        Console.WriteLine($"Input must be between 0 to {menuMaxOption}");
                         logger.Warn("Input value is Invalid.");
                     }
                 }
                 catch (FormatException ex)
                 {
-                    Console.WriteLine($"Input must be between 0 to {menuMaxOption}");
-                    logger.Error($"Input format is invalid.  {ex}");
+                    
+                    logger.Error($"Input format is invalid.  {ex.Message}");
                 }
 
-            } while ( finalInput < 0 || finalInput > menuMaxOption );
+            };
 
             return finalInput;
         }
@@ -439,21 +470,18 @@ namespace GStoreApp.ConsoleApp
         /// finally, add () and - into phone number to adjust to format
         /// </summary>
         /// <returns></returns>
-        public string PhoneCheck()
+        public string PhoneCheck( string phone )
         {
-            string phoneOp;
-            do
+            string phoneOp = Regex.Replace(phone, @"[^0-9]+", "");
+            while (phoneOp.Length != 10)
             {
-                string phoneIn = Console.ReadLine();
-                phoneOp = Regex.Replace(phoneIn, @"[^0-9]+", "");
-                if (phoneOp.Length != 10)
-                {
-                    Console.WriteLine("The input must be 10 digit number");
-                    logger.Warn("The input of phone number is wrong.");
-                    Console.WriteLine("Please type again:  ");
-                }
+                Console.WriteLine("The input must be 10 digit number");
+                logger.Warn("The input of phone number is wrong.");
+                Console.WriteLine("Please type again:  ");
+                phoneOp = Console.ReadLine();
+                phoneOp = Regex.Replace(phoneOp, @"[^0-9]+", "");
 
-            } while (phoneOp.Length != 10);
+            };
 
             phoneOp = "(" + phoneOp.Substring(0, 3) + ")" + phoneOp.Substring(3, 3)
                     + "-" + phoneOp.Substring(6, 4);

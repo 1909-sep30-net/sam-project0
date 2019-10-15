@@ -255,6 +255,6 @@ namespace DB.Repo
                  l.Product storeFind = Mapper.MapProduct(product);
                  return storeFind;
              }
-        }
+        }       
     }
 }

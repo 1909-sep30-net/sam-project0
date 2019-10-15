@@ -1,12 +1,14 @@
 ﻿using System;
+using NLog;
 
 namespace GStoreApp.ConsoleApp
 {
     class Program
     {
+        private static readonly ILogger logger = LogManager.GetCurrentClassLogger();
         static void Main(string[] args)
         {
-            int mainMenu;
+            int mainMenu = 0;
             Menu m = new Menu();
 
             /// <summary>
@@ -23,7 +25,19 @@ namespace GStoreApp.ConsoleApp
                 Console.WriteLine("0. Exit");
                 Console.WriteLine("---------------------");
 
-                mainMenu = m.InputCheckInt(1);
+                try
+                {
+                    mainMenu = Int32.Parse(Console.ReadLine());
+                    if ( mainMenu < 0 || mainMenu > 4)
+                    {
+                        logger.Warn("Invalid input number.");
+                    }
+                }
+                catch( FormatException ex )
+                {
+                    logger.Error("Invalid input format:  " + ex.Message);
+                    mainMenu = m.InputCheckInt(- 1, 1);
+                }
 
                 switch (mainMenu)
                 {
