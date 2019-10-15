@@ -16,7 +16,7 @@ namespace GStoreApp.ConsoleApp
             /// </summary>
             do
             {
-                Console.WriteLine("Welcome to GCSotre!");
+                Console.WriteLine("Welcome to GCStore!");
                 Console.WriteLine("How can I help you today?");
                 Console.WriteLine("1. Place Order");
                 Console.WriteLine("2. Display Details of a Previous Order by Order Id");

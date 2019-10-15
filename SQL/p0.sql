@@ -101,3 +101,22 @@ select * from Customer;
 
 select * from OrderOverView;
 select * from OrderItem;
+
+update Inventory 
+	set Amount = 6
+	where InventoryId = 1;
+update Inventory 
+	set Amount = 5
+	where InventoryId = 2;
+update Inventory 
+	set Amount = 4
+	where InventoryId = 3;
+
+delete OrderItem
+	where OrderId > 3;
+
+delete OrderOverView
+	where OrderId > 3;
+
+delete customer
+	where CustomerId > 3;

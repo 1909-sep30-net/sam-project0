@@ -46,16 +46,26 @@ namespace GStoreApp.ConsoleApp
                 ///</summary>
                 case 1:
                     Console.WriteLine("Please Enter your first name:");
-                    string fName = Console.ReadLine();
+                    string fNameInput = Console.ReadLine();
+                    string fName = NameFormat(fNameInput);
                     Console.WriteLine("Please Enter your last name: ");
-                    string lName = Console.ReadLine();
+                    string lNameInput = Console.ReadLine();
+                    string lName = NameFormat(lNameInput);
                     Console.WriteLine("Please enter your 10 digit phone number ");
                     Console.WriteLine("without () or - :   ");
                     string phone = Console.ReadLine();
                     phone = PhoneCheck(phone);
                     Console.WriteLine("Please enter your default store: ");
-                    int favStore = Int32.Parse(Console.ReadLine());
-                    favStore = InputCheckInt(favStore, 999999);
+                    int favStore = 0;
+                    try
+                    {
+                        favStore = Int32.Parse(Console.ReadLine());
+                    }
+                    catch ( FormatException ex )
+                    {
+                        logger.Error("Invalid input format: " + ex.Message);
+                        favStore = InputCheckInt(favStore, 999999);
+                    }
                     Repo newGuys = new Repo();
                     Store storeFound = newGuys.CheckIfStoreExists( favStore );
                     if (storeFound != null)
@@ -107,10 +117,12 @@ namespace GStoreApp.ConsoleApp
                 ///</remark>
                 case 2:
                     Console.WriteLine("Please Enter your first name:");
-                    fName = Console.ReadLine();
+                    fNameInput = Console.ReadLine();
+                    fName = NameFormat(fNameInput);
                     Console.WriteLine("");
                     Console.WriteLine("Please Enter your last name: ");
-                    lName = Console.ReadLine();
+                    lNameInput = Console.ReadLine();
+                    lName = NameFormat(lNameInput);
                     Console.WriteLine("");
 
                     Customer customerOld = new Customer(fName, lName);
@@ -283,6 +295,7 @@ namespace GStoreApp.ConsoleApp
             }
             catch ( FormatException ex )
             {
+                logger.Error("Invalid input format: " + ex.Message);
                 orderId = InputCheckInt(orderId, 999999);
             }
             Repo search = new Repo();
@@ -343,6 +356,7 @@ namespace GStoreApp.ConsoleApp
             }
             catch ( FormatException ex )
             {
+                logger.Error("Invalid input format: " + ex.Message);
                 storeId = InputCheckInt(storeId, 999999);
             }
              
@@ -388,6 +402,7 @@ namespace GStoreApp.ConsoleApp
             }
             catch ( FormatException ex )
             {
+                logger.Error("Invalid input format: " + ex.Message);
                 customerId = InputCheckInt(customerId, 999999);
             }
             Repo search = new Repo();
@@ -486,6 +501,21 @@ namespace GStoreApp.ConsoleApp
             phoneOp = "(" + phoneOp.Substring(0, 3) + ")" + phoneOp.Substring(3, 3)
                     + "-" + phoneOp.Substring(6, 4);
             return phoneOp;
+        }
+        /// <summary>
+        /// Function to handle users' input on their name
+        /// and fix its format
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public string NameFormat( string name )
+        {
+            name = Regex.Replace(name, @"[^A-z]+", "");
+            //name = Regex.Replace(name, @"[^a-z]+", "");
+            string outputName = name.Substring(0, 1).ToUpper()
+                              + name.Substring(1, name.Length - 1 ).ToLower();
+
+            return outputName;
         }
     }
 }
