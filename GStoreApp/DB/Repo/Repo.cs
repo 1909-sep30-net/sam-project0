@@ -152,7 +152,7 @@ namespace DB.Repo
             }
 
             dbcontext.SaveChanges();
-            return "Order Success!!";
+            return $"Order Success!! Your order Id is: {orderId}.";
 
         }
 

@@ -34,7 +34,7 @@ namespace GStoreApp.ConsoleApp
             }
             catch (FormatException ex)
             {
-                logger.Error("Invalid input format  " + ex.Message);
+                logger.Error("(Customer Menu)Invalid input format  " + ex.Message);
                 poMenu = InputCheckInt( -1, 2 );
             }
 
@@ -63,7 +63,7 @@ namespace GStoreApp.ConsoleApp
                     }
                     catch ( FormatException ex )
                     {
-                        logger.Error("Invalid input format: " + ex.Message);
+                        logger.Error("(New Customer)Invalid input format: " + ex.Message);
                         favStore = InputCheckInt(favStore, 999999);
                     }
                     Repo newGuys = new Repo();
@@ -87,7 +87,7 @@ namespace GStoreApp.ConsoleApp
                             {
                                 Console.WriteLine("The input must be y or n");
                                 Console.WriteLine("Plese type again(y/n):  ");
-                                logger.Warn($"Invalid Input:  {confirmCheck}");
+                                logger.Warn($"(New Customer)Invalid Input:  {confirmCheck}");
                             }
                         } while (confirmCheck);
 
@@ -95,6 +95,7 @@ namespace GStoreApp.ConsoleApp
                         {
                             Customer customerNew = new Customer(fName, lName, phone, favStore);
                             newGuys.AddCustomer(customerNew);
+                            logger.Info("New Customer is added into database.");
                             Console.WriteLine("");
                             //PlaceOrder(customerNew, newGuys);
                         }
@@ -152,7 +153,7 @@ namespace GStoreApp.ConsoleApp
                                     Console.WriteLine("");
                                     Console.WriteLine("The input must be y or n");
                                     Console.WriteLine("Plese type again(y/n):  ");
-                                    logger.Warn($"Invalid Input:  {confirmCheck}");
+                                    logger.Warn($"(Existed Customer)Invalid Input:  {confirmCheck}");
                                 }
                             } while (confirmCheck);
 
@@ -175,7 +176,6 @@ namespace GStoreApp.ConsoleApp
             }
 
             Console.Clear();
-            //MainMenu();
         }
 
         /// <summary>
@@ -227,14 +227,14 @@ namespace GStoreApp.ConsoleApp
                         Console.WriteLine("The Order must be 3 numbers.");
                         Console.WriteLine("Please type again");
                         Console.WriteLine("Or 000 to back to main menu:  ");
-                        logger.Warn("Invalid format Input");
+                        logger.Warn("(placing order)Invalid input format");
                     }
                 } else
                 {
                     Console.WriteLine("The Order must be 3 numbers.");
                     Console.WriteLine("Please type again");
                     Console.WriteLine("Or 000 to back to main menu:  ");
-                    logger.Warn("Invalid length Input");
+                    logger.Warn("(placing order)Invalid length Input");
                 }
             } while ( amountCheck );
 
@@ -266,7 +266,7 @@ namespace GStoreApp.ConsoleApp
                     {
                         Console.WriteLine("The input must be y or n");
                         Console.WriteLine("Plese type again(y/n):  ");
-                        logger.Warn($"Invalid Input:  {confirmCheck}");
+                        logger.Warn($"(placing order)Invalid Input:  {confirmCheck}");
                     }
                 } while (confirmCheck);
 
@@ -295,7 +295,7 @@ namespace GStoreApp.ConsoleApp
             }
             catch ( FormatException ex )
             {
-                logger.Error("Invalid input format: " + ex.Message);
+                logger.Error("(search past order)Invalid input format: " + ex.Message);
                 orderId = InputCheckInt(orderId, 999999);
             }
             Repo search = new Repo();
@@ -306,6 +306,7 @@ namespace GStoreApp.ConsoleApp
                 DateTime orderDate = search.SearchPastOrder(orderId).OrderDate;
                 decimal totalPrice = search.SearchPastOrder(orderId).TotalPrice;
 
+                Console.Clear();
                 Console.WriteLine("Your Order Detail");
                 Console.WriteLine("-------------------");
                 Console.WriteLine($"Order ID:     {orderId}");
@@ -315,23 +316,9 @@ namespace GStoreApp.ConsoleApp
                 Console.WriteLine($"Total Price:  {totalPrice}");
 
                 List<OrderItem> items = search.SearchPastOrderItem(orderId).ToList();
-                string productName;
                 for (int i = 0; i < items.Count(); i++)
                 {
-
-                    if (items[i].ProductName == "NSwitch")
-                    {
-                        productName = "NSwitch";
-                    }
-                    else if (items[i].ProductName == "Xbox One")
-                    {
-                        productName = "Xbox One";
-                    }
-                    else
-                    {
-                        productName = "Playstation 4 Pro";
-                    }
-                    Console.WriteLine($"{productName}:  {items[i].Amount}");
+                    Console.WriteLine($"{items[i].ProductName}:  {items[i].Amount}");
                 }
             } else
             {
@@ -356,7 +343,7 @@ namespace GStoreApp.ConsoleApp
             }
             catch ( FormatException ex )
             {
-                logger.Error("Invalid input format: " + ex.Message);
+                logger.Error("(order history by storeID)Invalid input format: " + ex.Message);
                 storeId = InputCheckInt(storeId, 999999);
             }
              
@@ -368,6 +355,7 @@ namespace GStoreApp.ConsoleApp
                 int cId;
                 DateTime date;
                 decimal p;
+                Console.Clear();
                 Console.WriteLine($"Here is Order History at store with Store ID: {storeId}");
                 Console.WriteLine("OrderId, CustomerId, OrderDaTe,          TotalPrice");
                 for( int i = 0; i < history.Count(); i++)
@@ -402,7 +390,7 @@ namespace GStoreApp.ConsoleApp
             }
             catch ( FormatException ex )
             {
-                logger.Error("Invalid input format: " + ex.Message);
+                logger.Error("(order history by customer id)Invalid input format: " + ex.Message);
                 customerId = InputCheckInt(customerId, 999999);
             }
             Repo search = new Repo();
@@ -414,6 +402,7 @@ namespace GStoreApp.ConsoleApp
                 int cId;
                 DateTime date;
                 decimal p;
+                Console.Clear();
                 Console.WriteLine($"Here is Order History at store with Customer ID: {customerId}");
                 Console.WriteLine("OrderId, StoreId, OrderDaTe,          TotalPrice");
                 for (int i = 0; i < history.Count(); i++)
@@ -465,13 +454,13 @@ namespace GStoreApp.ConsoleApp
                     finalInput = Int32.Parse(Console.ReadLine());
                     if (finalInput < 0 || finalInput > menuMaxOption)
                     {
-                        logger.Warn("Input value is Invalid.");
+                        logger.Warn("(input check)Input value is Invalid.");
                     }
                 }
                 catch (FormatException ex)
                 {
                     
-                    logger.Error($"Input format is invalid.  {ex.Message}");
+                    logger.Error($"(input check)Input format is invalid.  {ex.Message}");
                 }
 
             };
@@ -511,7 +500,6 @@ namespace GStoreApp.ConsoleApp
         public string NameFormat( string name )
         {
             name = Regex.Replace(name, @"[^A-z]+", "");
-            //name = Regex.Replace(name, @"[^a-z]+", "");
             string outputName = name.Substring(0, 1).ToUpper()
                               + name.Substring(1, name.Length - 1 ).ToLower();
 

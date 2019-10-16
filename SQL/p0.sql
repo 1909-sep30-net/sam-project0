@@ -111,6 +111,12 @@ update Inventory
 update Inventory 
 	set Amount = 4
 	where InventoryId = 3;
+update orderoverview
+	set StoreId = 2
+	where OrderId = 2;
+update orderoverview
+	set StoreId = 3
+	where OrderId = 3;
 
 delete OrderItem
 	where OrderId > 3;
@@ -120,3 +126,12 @@ delete OrderOverView
 
 delete customer
 	where CustomerId > 3;
+
+DBCC CHECKIDENT ('[Customer]', RESEED, 3);
+GO
+
+DBCC CHECKIDENT ('[OrderOverView]', RESEED, 3);
+GO
+
+DBCC CHECKIDENT ('[Orderitem]', RESEED, 6);
+GO

@@ -30,12 +30,12 @@ namespace GStoreApp.ConsoleApp
                     mainMenu = Int32.Parse(Console.ReadLine());
                     if ( mainMenu < 0 || mainMenu > 4)
                     {
-                        logger.Warn("Invalid input number.");
+                        logger.Warn("(Main menu)Invalid input number.");
                     }
                 }
                 catch( FormatException ex )
                 {
-                    logger.Error("Invalid input format:  " + ex.Message);
+                    logger.Error("(Main menu)Invalid input format:  " + ex.Message);
                     mainMenu = m.InputCheckInt(- 1, 1);
                 }
 
